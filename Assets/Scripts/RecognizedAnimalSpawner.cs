@@ -43,24 +43,12 @@ public class RecognizedAnimalSpawner : MonoBehaviour
     private float nextSpawnTime;
     private AnimalPrefabMapping pendingMapping;
     private string pendingLabel;
+    private bool placementEnabled;
 
 
     private void Awake()
     {
-        if (classifier == null)
-        {
-            classifier = FindFirstObjectByType<ARCameraClassifier>();
-        }
-
-        if (raycastManager == null)
-        {
-            raycastManager = FindFirstObjectByType<ARRaycastManager>();
-        }
-
-        if (arCamera == null)
-        {
-            arCamera = Camera.main;
-        }
+        ResolveARRuntimeReferences();
 
         RebuildLookup();
 
@@ -86,8 +74,23 @@ public class RecognizedAnimalSpawner : MonoBehaviour
         }
     }
 
+    public bool SetPendingAnimal(string label)
+    {
+        placementEnabled = TrySetPendingAnimal(label);
+        return placementEnabled;
+    }
+
+    public void ClearPendingAnimal()
+    {
+        placementEnabled = false;
+        pendingLabel = null;
+        pendingMapping = null;
+    }
+
     private void Update()
     {
+        ResolveARRuntimeReferences();
+
         Pointer pointer = Pointer.current;
         if (pointer == null || !pointer.press.wasPressedThisFrame)
         {
@@ -105,7 +108,7 @@ public class RecognizedAnimalSpawner : MonoBehaviour
             return;
         }
 
-        if (pendingMapping == null || pendingMapping.prefab == null || Time.time < nextSpawnTime)
+        if (!placementEnabled || pendingMapping == null || pendingMapping.prefab == null || Time.time < nextSpawnTime)
         {
             return;
         }
@@ -136,6 +139,50 @@ private void RebuildLookup()
 
             mappingByLabel[mapping.label.Trim()] = mapping;
         }
+    }
+
+    private void ResolveARRuntimeReferences()
+    {
+        if (classifier == null || !classifier.isActiveAndEnabled)
+        {
+            classifier = FindFirstObjectByType<ARCameraClassifier>();
+        }
+
+        if (raycastManager == null || !raycastManager.isActiveAndEnabled)
+        {
+            raycastManager = FindFirstObjectByType<ARRaycastManager>();
+        }
+
+        if (arCamera == null || !arCamera.isActiveAndEnabled)
+        {
+            arCamera = FindActiveARCamera();
+        }
+    }
+
+    private Camera FindActiveARCamera()
+    {
+        var cameraManagers = FindObjectsByType<ARCameraManager>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        foreach (var cameraManager in cameraManagers)
+        {
+            if (cameraManager == null || !cameraManager.isActiveAndEnabled)
+            {
+                continue;
+            }
+
+            var camera = cameraManager.GetComponent<Camera>();
+            if (camera != null && camera.isActiveAndEnabled)
+            {
+                return camera;
+            }
+        }
+
+        var mainCamera = Camera.main;
+        if (mainCamera != null && mainCamera.isActiveAndEnabled)
+        {
+            return mainCamera;
+        }
+
+        return FindFirstObjectByType<Camera>();
     }
 
 private void HandlePredictionUpdated(string label, float confidence)
@@ -264,8 +311,9 @@ private void SpawnAnimal(string label, AnimalPrefabMapping mapping, Pose pose)
 #if UNITY_EDITOR
             if (TrySetPendingAnimal(editorFallbackLabel))
             {
-                Debug.Log($"AnimalScene opened without recognized animal. Using editor fallback: {pendingLabel}", this);
-                return;
+            placementEnabled = true;
+            Debug.Log($"AnimalScene opened without recognized animal. Using editor fallback: {pendingLabel}", this);
+            return;
             }
 #endif
             Debug.LogWarning("AnimalScene opened without a recognized animal.", this);
@@ -278,6 +326,7 @@ private void SpawnAnimal(string label, AnimalPrefabMapping mapping, Pose pose)
             return;
         }
 
+        placementEnabled = true;
         Debug.Log($"Ready to place recognized animal from state: {pendingLabel}", this);
     }
 

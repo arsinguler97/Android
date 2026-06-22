@@ -21,7 +21,7 @@ public class ARCameraClassifier : MonoBehaviour
     [SerializeField] private RawImage debugPreview;
 #pragma warning disable CS0414
     [SerializeField] private BackendType backendType = BackendType.GPUCompute;
-    [SerializeField] private float intervalSeconds = 0.5f;
+    [SerializeField] private float intervalSeconds = 2f;
 #pragma warning restore CS0414
     [SerializeField] private BackendType editorBackendType = BackendType.CPU;
     [SerializeField] private float editorIntervalSeconds = 1.25f;

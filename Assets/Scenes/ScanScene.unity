@@ -323,6 +323,7 @@ GameObject:
   - component: {fileID: 100068447}
   - component: {fileID: 100068446}
   - component: {fileID: 100068449}
+  - component: {fileID: 100068450}
   m_Layer: 0
   m_Name: Scan UI Canvas
   m_TagString: Untagged
@@ -429,6 +430,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalsListUI
   listPanel: {fileID: 24635}
+--- !u!114 &100068450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100068444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9830c041b2200294c87fd814ca9523a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScanPlaceModeUIController
+  targetCanvas: {fileID: 100068448}
+  templateText: {fileID: 883561633}
+  scanController: {fileID: 1971560264}
+  placementFallbackText: Place the animal
 --- !u!1 &331885990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,6 +1729,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1718940551}
   - component: {fileID: 1718940550}
+  - component: {fileID: 1718940549}
   m_Layer: 0
   m_Name: AIAnimalRecognition
   m_TagString: Untagged
@@ -1738,11 +1756,148 @@ MonoBehaviour:
   predictionText: {fileID: 883561633}
   debugPreview: {fileID: 1277441348}
   backendType: 256
-  intervalSeconds: 0.5
+  intervalSeconds: 2
   editorBackendType: 512
   editorIntervalSeconds: 1.25
   cameraImageSize: {x: 224, y: 224}
   useRenderedCameraInEditor: 1
+--- !u!114 &1718940549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718940548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc59256c29bcad244bb40bd29d99ebc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RecognizedAnimalSpawner
+  classifier: {fileID: 1718940550}
+  raycastManager: {fileID: 1946245047}
+  arCamera: {fileID: 2087452595}
+  animalPrefabs:
+  - label: lion
+    prefab: {fileID: 8724420598269409120, guid: b7ecc03e076e1af4e81f38a0067b838d, type: 3}
+    positionOffset: {x: 0, y: -0.25, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: 80e43f4d2f9e253448b2a0c4ab8cfc5d, type: 3}
+  - label: alligator
+    prefab: {fileID: 8539670216803094270, guid: 96c4d0d107a0f5048be4cfba7144a785, type: 3}
+    positionOffset: {x: 0, y: -0.05, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: dce68941141ff2843a65b176eac01378, type: 3}
+  - label: American alligator
+    prefab: {fileID: 8539670216803094270, guid: 96c4d0d107a0f5048be4cfba7144a785, type: 3}
+    positionOffset: {x: 0, y: -0.05, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: dce68941141ff2843a65b176eac01378, type: 3}
+  - label: bear
+    prefab: {fileID: 966991152729041596, guid: 43ce70c4bac000f41a8b179f81540f1e, type: 3}
+    positionOffset: {x: 0.075, y: -0.1, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: 14877c38d76bf094bafaf4a0487a1079, type: 3}
+  - label: brown bear
+    prefab: {fileID: 966991152729041596, guid: 43ce70c4bac000f41a8b179f81540f1e, type: 3}
+    positionOffset: {x: 0.075, y: -0.1, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: 14877c38d76bf094bafaf4a0487a1079, type: 3}
+  - label: American black bear
+    prefab: {fileID: 966991152729041596, guid: 43ce70c4bac000f41a8b179f81540f1e, type: 3}
+    positionOffset: {x: 0.075, y: -0.1, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: 14877c38d76bf094bafaf4a0487a1079, type: 3}
+  - label: ice bear
+    prefab: {fileID: 966991152729041596, guid: 43ce70c4bac000f41a8b179f81540f1e, type: 3}
+    positionOffset: {x: 0.075, y: -0.1, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: 14877c38d76bf094bafaf4a0487a1079, type: 3}
+  - label: sloth bear
+    prefab: {fileID: 966991152729041596, guid: 43ce70c4bac000f41a8b179f81540f1e, type: 3}
+    positionOffset: {x: 0.075, y: -0.1, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: 14877c38d76bf094bafaf4a0487a1079, type: 3}
+  - label: fox
+    prefab: {fileID: 3064776678022664582, guid: 7d3a7d924b13fdf4581b12c6ed5e64e0, type: 3}
+    positionOffset: {x: -0.225, y: 0, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: e6e31ba1d46afef4b8332e9520273d7f, type: 3}
+  - label: red fox
+    prefab: {fileID: 3064776678022664582, guid: 7d3a7d924b13fdf4581b12c6ed5e64e0, type: 3}
+    positionOffset: {x: -0.225, y: 0, z: -0.1}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: e6e31ba1d46afef4b8332e9520273d7f, type: 3}
+  - label: kit fox
+    prefab: {fileID: 3064776678022664582, guid: 7d3a7d924b13fdf4581b12c6ed5e64e0, type: 3}
+    positionOffset: {x: -0.225, y: 0, z: -0.1}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: e6e31ba1d46afef4b8332e9520273d7f, type: 3}
+  - label: Arctic fox
+    prefab: {fileID: 3064776678022664582, guid: 7d3a7d924b13fdf4581b12c6ed5e64e0, type: 3}
+    positionOffset: {x: -0.225, y: 0, z: -0.1}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: e6e31ba1d46afef4b8332e9520273d7f, type: 3}
+  - label: grey fox
+    prefab: {fileID: 3064776678022664582, guid: 7d3a7d924b13fdf4581b12c6ed5e64e0, type: 3}
+    positionOffset: {x: -0.225, y: 0, z: -0.1}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: e6e31ba1d46afef4b8332e9520273d7f, type: 3}
+  - label: elephant
+    prefab: {fileID: 2178640277249062114, guid: 736755ff151ebe34ea46870f92c63b32, type: 3}
+    positionOffset: {x: -0.15, y: -0.5, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: a1c6807eddc32c5449028884c34d6a93, type: 3}
+  - label: Indian elephant
+    prefab: {fileID: 2178640277249062114, guid: 736755ff151ebe34ea46870f92c63b32, type: 3}
+    positionOffset: {x: -0.15, y: -0.5, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: a1c6807eddc32c5449028884c34d6a93, type: 3}
+  - label: African elephant
+    prefab: {fileID: 2178640277249062114, guid: 736755ff151ebe34ea46870f92c63b32, type: 3}
+    positionOffset: {x: -0.15, y: -0.5, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    alignBoundsToSurface: 1
+    sfx: {fileID: 8300000, guid: a1c6807eddc32c5449028884c34d6a93, type: 3}
+  minimumConfidence: 0.75
+  spawnCooldownSeconds: 1
+  replaceCurrentAnimal: 1
+  minimumHorizontalDot: 0.75
+  useRecognizedAnimalState: 0
+  clearStateAfterSpawn: 0
+  animalClickMaxDistance: 100
+  sfxVolume: 1
+  editorFallbackLabel: lion
 --- !u!4 &1718940551
 Transform:
   m_ObjectHideFlags: 0
@@ -2171,8 +2326,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalScanSceneController
   classifier: {fileID: 1718940550}
+  animalSpawner: {fileID: 1718940549}
+  modeUI: {fileID: 100068450}
   statusText: {fileID: 883561633}
-  animalSceneName: AnimalScene
   minimumConfidence: 0.75
   activationDelaySeconds: 1.5
   supportedLabels:

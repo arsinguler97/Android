@@ -20,6 +20,14 @@ public class AppSceneLoader : MonoBehaviour
         "AIAnimalRecognition"
     };
 
+    private static readonly string[] ScanSceneARRigObjects =
+    {
+        "AR Session",
+        "XR Origin",
+        "Camera Offset",
+        "Main Camera"
+    };
+
     private const float ScanReactivationDelaySeconds = 2.5f;
 
     private static AppSceneLoader instance;
@@ -124,6 +132,7 @@ public class AppSceneLoader : MonoBehaviour
 
         if (isPlacementMode)
         {
+            EnsureScanSceneARRigActive(scanScene);
             SetScanSceneObjectActive(scanScene, "Scan UI Canvas", false);
             SetScanSceneObjectActive(scanScene, "AITestImageBoard", false);
             SetScanSceneObjectActive(scanScene, "AIAnimalRecognition", false);
@@ -148,10 +157,18 @@ public class AppSceneLoader : MonoBehaviour
 
     private static void SetScanSceneObjectActive(Scene scanScene, string objectName, bool active)
     {
-        var sceneObject = FindRootObject(scanScene, objectName);
+        var sceneObject = FindObjectInScene(scanScene, objectName);
         if (sceneObject != null)
         {
             sceneObject.SetActive(active);
+        }
+    }
+
+    private static void EnsureScanSceneARRigActive(Scene scanScene)
+    {
+        foreach (var objectName in ScanSceneARRigObjects)
+        {
+            SetScanSceneObjectActive(scanScene, objectName, true);
         }
     }
 
@@ -162,6 +179,39 @@ public class AppSceneLoader : MonoBehaviour
             if (rootObject.name == objectName)
             {
                 return rootObject;
+            }
+        }
+
+        return null;
+    }
+
+    private static GameObject FindObjectInScene(Scene scene, string objectName)
+    {
+        foreach (var rootObject in scene.GetRootGameObjects())
+        {
+            var match = FindObjectRecursive(rootObject.transform, objectName);
+            if (match != null)
+            {
+                return match.gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    private static Transform FindObjectRecursive(Transform current, string objectName)
+    {
+        if (current.name == objectName)
+        {
+            return current;
+        }
+
+        for (var i = 0; i < current.childCount; i++)
+        {
+            var match = FindObjectRecursive(current.GetChild(i), objectName);
+            if (match != null)
+            {
+                return match;
             }
         }
 

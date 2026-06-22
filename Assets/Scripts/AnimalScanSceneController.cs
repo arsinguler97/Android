@@ -13,6 +13,8 @@ public class AnimalScanSceneController : MonoBehaviour
     }
 
     [SerializeField] private ARCameraClassifier classifier;
+    [SerializeField] private RecognizedAnimalSpawner animalSpawner;
+    [SerializeField] private ScanPlaceModeUIController modeUI;
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private string animalSceneName = "AnimalScene";
     [SerializeField, Range(0f, 1f)] private float minimumConfidence = 0.75f;
@@ -28,6 +30,16 @@ public class AnimalScanSceneController : MonoBehaviour
         if (classifier == null)
         {
             classifier = FindFirstObjectByType<ARCameraClassifier>();
+        }
+
+        if (animalSpawner == null)
+        {
+            animalSpawner = FindFirstObjectByType<RecognizedAnimalSpawner>();
+        }
+
+        if (modeUI == null)
+        {
+            modeUI = FindFirstObjectByType<ScanPlaceModeUIController>();
         }
 
         RebuildLookup();
@@ -88,8 +100,17 @@ public class AnimalScanSceneController : MonoBehaviour
 
         loadingAnimalScene = true;
         AnimalRecognitionState.SetAnimal(normalizedLabel, displayName, confidence);
+
         SetStatus($"Animal detected!\n{displayName} - {confidence * 100f:0}%");
         Debug.Log($"[AnimalScanSceneController] Detected {displayName} from label '{normalizedLabel}' at {confidence * 100f:0.0}%. Loading {animalSceneName}.", this);
+
+        if (string.IsNullOrWhiteSpace(animalSceneName))
+        {
+            Debug.LogError("Animal scene name is empty.", this);
+            loadingAnimalScene = false;
+            return;
+        }
+
         AppSceneLoader.Load(animalSceneName);
     }
 
@@ -106,6 +127,21 @@ public class AnimalScanSceneController : MonoBehaviour
         loadingAnimalScene = false;
         enabledAtTime = Time.time;
         AnimalRecognitionState.Clear();
+        if (animalSpawner != null)
+        {
+            animalSpawner.ClearPendingAnimal();
+        }
+
+        if (modeUI != null)
+        {
+            modeUI.ShowScanMode();
+        }
+
+        if (classifier != null && !classifier.enabled)
+        {
+            classifier.enabled = true;
+        }
+
         SetStatus("Scan an animal");
         Debug.Log($"[AnimalScanSceneController] Scan state reset. Detection locked until t={enabledAtTime + activationDelaySeconds:0.00}.", this);
     }
